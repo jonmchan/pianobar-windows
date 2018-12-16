@@ -26,6 +26,7 @@ THE SOFTWARE.
 #include "config.h"
 
 #include "ui.h"
+#include "debug.h"
 #include "ui_readline.h"
 #include "console.h"
 #include <assert.h>

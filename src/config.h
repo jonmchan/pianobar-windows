@@ -22,3 +22,10 @@
 #define strcasecmp _stricmp
 #endif
 
+#ifndef NDEBUG
+#define HAVE_DEBUGLOG
+#define debug(...) fprintf(stderr, __VA_ARGS__)
+#else
+#define debug(...)
+#endif
+

@@ -27,6 +27,7 @@ THE SOFTWARE.
 #include <piano.h>
 
 #include "main.h"
+#include "debug.h"
 #include "console.h"
 #include "hotkey.h"
 #include "ui.h"
@@ -414,6 +415,8 @@ int main(int argc, char **argv)
 {
     static BarApp_t app;
 
+	debugEnable();
+
     memset(&app, 0, sizeof(app));
 
     BarConsoleInit();
@@ -421,6 +424,7 @@ int main(int argc, char **argv)
     BarConsoleSetTitle(TITLE);
 
     BarHotKeyInit();
+
 
     /* init some things */
     BarSettingsInit(&app.settings);

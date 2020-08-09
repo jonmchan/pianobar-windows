@@ -103,6 +103,7 @@ typedef struct {
 	char *npSongFormat;
 	char *npStationFormat;
 	char *listSongFormat;
+	char *timeFormat;
 	char *titleFormat;
 	char *player;
 	char *fifo;

@@ -24,6 +24,7 @@ THE SOFTWARE.
 #include "config.h"
 
 #include <assert.h>
+#include <math.h>
 #include <piano.h>
 
 #include "main.h"
@@ -324,25 +325,33 @@ static void BarMainPlayerCleanup(BarApp_t *app)
 static void BarMainPrintTime(BarApp_t *app)
 {
     double songPlayed, songDuration, songRemaining;
-    char sign;
+	char sign[2] = {0, 0};
 
     songDuration = BarPlayer2GetDuration(app->player);
     songPlayed = BarPlayer2GetTime(app->player);
 
-    if (songPlayed <= songDuration)
-    {
-        songRemaining = songDuration - songPlayed;
-        sign = '-';
-    }
-    else
-    {
-        /* longer than expected */
-        songRemaining = songPlayed - songDuration;
-        sign = '+';
-    }
-    BarUiMsg(&app->settings, MSG_TIME, "%c%02u:%02u/%02u:%02u\r",
-        sign, (int)songRemaining / 60, (int)songRemaining % 60,
-        (int)songDuration / 60, (int)songDuration % 60);
+	if (songPlayed <= songDuration) {
+		songRemaining = songDuration - songPlayed;
+		sign[0] = '-';
+	} else {
+		/* longer than expected */
+		songRemaining = songPlayed - songDuration;
+		sign[0] = '+';
+	}
+
+	char outstr[512], totalFormatted[16], remainingFormatted[16],
+			elapsedFormatted[16];
+	const char *vals[] = {totalFormatted, remainingFormatted,
+			elapsedFormatted, sign};
+	snprintf (totalFormatted, sizeof (totalFormatted), "%02u:%02u",
+			((unsigned int) songDuration/60), (unsigned int) fmod(songDuration, 60));
+	snprintf (remainingFormatted, sizeof (remainingFormatted), "%02u:%02u",
+			((unsigned int) songRemaining/60), (unsigned int) fmod(songRemaining, 60));
+	snprintf (elapsedFormatted, sizeof (elapsedFormatted), "%02u:%02u",
+			((unsigned int) songPlayed/60), (unsigned int) fmod(songPlayed, 60));
+	BarUiCustomFormat (outstr, sizeof (outstr), app->settings.timeFormat,
+			"tres", vals);
+	BarUiMsg (&app->settings, MSG_TIME, "%s\r", outstr);
 }
 
 /*	main loop

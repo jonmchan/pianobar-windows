@@ -151,6 +151,7 @@ void BarSettingsDestroy (BarSettings_t *settings) {
 	free (settings->npSongFormat);
 	free (settings->npStationFormat);
 	free (settings->listSongFormat);
+	free (settings->timeFormat);
 	free (settings->titleFormat);
 	free (settings->player);
 	free (settings->fifo);
@@ -199,6 +200,7 @@ void BarSettingsRead (BarSettings_t *settings) {
 	settings->npSongFormat = strdup ("\"%t\" by \"%a\" on \"%l\"%r%@%s");
 	settings->npStationFormat = strdup ("Station \"%n\" (%i)");
 	settings->listSongFormat = strdup ("%i) %a - %t%r");
+	settings->timeFormat = strdup ("%s%r/%t");
 	settings->titleFormat = strdup (TITLE " - \"%t\" by \"%a\" on \"%l\"%r%@%s");
 	settings->player = NULL;
 	settings->rpcHost = strdup (PIANO_RPC_HOST);
@@ -430,6 +432,9 @@ void BarSettingsRead (BarSettings_t *settings) {
 			} else if (streq ("format_list_song", key)) {
 				free (settings->listSongFormat);
 				settings->listSongFormat = strdup (val);
+			} else if (streq ("format_time", key)) {
+				free (settings->timeFormat);
+				settings->timeFormat = strdup (val);
 			} else if (streq ("format_title", key)) {
 				free (settings->titleFormat);
 				settings->titleFormat = strdup (val);

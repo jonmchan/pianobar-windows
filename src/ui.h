@@ -53,4 +53,6 @@ void BarUiStartEventCmd (const BarSettings_t *, const char *,
 int BarUiPianoCall (BarApp_t * const, PianoRequestType_t,
 		void *, PianoReturn_t *);
 void BarUiHistoryPrepend (BarApp_t *app, PianoSong_t *song);
+void BarUiCustomFormat (char *dest, size_t destSize, const char *format,
+		const char *formatChars, const char **formatVals);
 

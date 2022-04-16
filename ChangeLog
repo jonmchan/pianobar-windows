@@ -1,3 +1,19 @@
+Release 2022.04.20:
+ - ui_act: Improve station management query
+ - Disable station mode selection for QuickMix
+ - docs: fix simple typo, exhaused -> exhausted
+ - Allow choosing time format
+ - Add optional debugging code
+ - Allow changing station mode
+ - Get back to 1s update interval
+ - Don't overwrite XDG_CONFIG_HOME
+ - Cleanup warnings
+ - ui: Make up to three retries while executing network call
+ - http: Improve error messages around retries
+ - http: Handle 5xx server error codes
+ - http: Cleanup warnings
+ - piano: Add PIANO_RET_NETWORK_ERROR error code
+
 Release 2020.04.20:
  - Add support for multimedia keys in hotkeys
  - backport: piano: Request all stations

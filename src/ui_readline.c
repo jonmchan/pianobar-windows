@@ -172,7 +172,7 @@ size_t BarReadline (char *buf, const size_t bufSize, const char *mask,
 						if (bufPos > 0)
 						{
 							if (echo) {
-								BarConsoleMoveCursor(-1);
+								BarConsoleMoveCursor(-1, 0);
 							}
 							bufOut = BarReadlinePriorUtf8(bufOut);
 							--bufPos;
@@ -183,7 +183,7 @@ size_t BarReadline (char *buf, const size_t bufSize, const char *mask,
 						if (bufPos < bufLen)
 						{
 							if (echo) {
-								BarConsoleMoveCursor(1);
+								BarConsoleMoveCursor(1, 0);
 							}
 							bufOut = BarReadlineNextUtf8(bufOut);
 							++bufPos;
@@ -192,7 +192,7 @@ size_t BarReadline (char *buf, const size_t bufSize, const char *mask,
 
 					case VK_HOME:
 						if (echo) {
-							BarConsoleMoveCursor(-bufPos);
+							BarConsoleMoveCursor(-bufPos, 0);
 						}
 						bufPos = 0;
 						bufOut = buf;
@@ -200,7 +200,7 @@ size_t BarReadline (char *buf, const size_t bufSize, const char *mask,
 
 					case VK_END:
 						if (echo) {
-							BarConsoleMoveCursor(bufLen - bufPos);
+							BarConsoleMoveCursor(bufLen - bufPos, 0);
 						}
 						bufPos = bufLen;
 						bufOut = buf + strlen(buf);
@@ -217,7 +217,7 @@ size_t BarReadline (char *buf, const size_t bufSize, const char *mask,
 							bufOut[moveSize] = '\0';
 
 							if (echo) {
-								BarConsoleMoveCursor(-1);
+								BarConsoleMoveCursor(-1, 0);
 								BarConsoleEraseCharacter();
 							}
 

@@ -75,6 +75,69 @@ static void BarParseCallback(struct vtparse* parser, vtparse_action_t action, un
 
         switch (ch)
         {
+            case 'A': // Cursor Up
+                BarConsoleMoveCursor(0, -(parser->num_params > 0 ? parser->params[0] : 1));
+                break;
+
+            case 'B': // Cursor Down
+                BarConsoleMoveCursor(0, (parser->num_params > 0 ? parser->params[0] : 1));
+                break;
+
+            case 'C': // Cursor Forward
+                BarConsoleMoveCursor((parser->num_params > 0 ? parser->params[0] : 1), 0);
+                break;
+
+            case 'D': // Cursor Back
+                BarConsoleMoveCursor(-(parser->num_params > 0 ? parser->params[0] : 1), 0);
+                break;
+
+            case 'E': // Cursor Next Line
+                BarConsoleMoveCursor(-65535, (parser->num_params > 0 ? parser->params[0] : 1));
+                break;
+
+            case 'F': // Cursor Previous Line
+                BarConsoleMoveCursor(-65535, -(parser->num_params > 0 ? parser->params[0] : 1));
+                break;
+
+            case 'G': // Cursor Horizontal Absolute
+                BarConsoleMoveCursor((parser->num_params > 0 ? parser->params[0] : 0) - BarConsoleGetCursorPosition().X, 0);
+                break;
+
+            case 'H': // Cursor Position
+                {
+                    COORD cursor;
+
+                    if (parser->num_params == 0)
+                    {
+                        cursor.X = 0;
+                        cursor.Y = 0;
+                    }
+                    else if (parser->num_params == 1)
+                    {
+                        cursor.X = 0;
+                        cursor.Y = parser->params[0] - 1;
+                    }
+                    else if (parser->num_params == 2 && parser->params[0] && !parser->params[1])
+                    {
+                        cursor.X = parser->params[0] - 1;
+                        cursor.Y = 0;
+                    }
+                    else if (parser->num_params == 2 && parser->params[0] && parser->params[1])
+                    {
+                        cursor.X = parser->params[1] - 1;
+                        cursor.Y = parser->params[0] - 1;
+                    }
+                    else
+                        break;
+
+                    BarConsoleSetCursorPosition(cursor);
+                }
+                break;
+
+            case 'J':
+                BarConsoleEraseDisplay(parser->num_params > 0 ? parser->params[0] : 0);
+                break;
+
             case 'K':
                 BarConsoleEraseLine(parser->num_params > 0 ? parser->params[0] : 0);
                 break;
@@ -198,6 +261,23 @@ void BarConsoleSetSize(int width, int height)
     SetConsoleWindowInfo(handle, TRUE, &r);
 }
 
+COORD BarConsoleGetSize()
+{
+    HANDLE handle;
+    COORD s = { 0 };
+    CONSOLE_SCREEN_BUFFER_INFO csbi;
+
+    handle = BarConsoleGetStdOut();
+
+    if (!GetConsoleScreenBufferInfo(handle, &csbi))
+        return s;
+
+    s.X = csbi.srWindow.Right - csbi.srWindow.Left + 1;
+    s.Y = csbi.srWindow.Bottom - csbi.srWindow.Top + 1;
+
+    return s;
+}
+
 void BarConsoleSetCursorPosition(COORD position)
 {
     SetConsoleCursorPosition(BarConsoleGetStdOut(), position);
@@ -214,12 +294,44 @@ COORD BarConsoleGetCursorPosition()
     return result;
 }
 
-COORD BarConsoleMoveCursor(int xoffset)
+COORD BarConsoleMoveCursor(int xoffset, int yoffset)
 {
-    COORD position;
+    COORD position, screen;
+
+    screen = BarConsoleGetSize();
 
     position = BarConsoleGetCursorPosition();
-    position.X += xoffset;
+
+    if (xoffset < 0)
+    {
+        if (xoffset + position.X < 0)
+            position.X = 0;
+        else
+            position.X += xoffset;
+    }
+    else if (xoffset > 0)
+    {
+        if (xoffset - position.X >= screen.X)
+            position.X = screen.X;
+        else
+            position.X += xoffset;
+    }
+
+    if (yoffset < 0)
+    {
+        if (yoffset + position.Y < 0)
+            position.Y = 0;
+        else
+            position.Y += yoffset;
+    }
+    else if (yoffset > 0)
+    {
+        if (yoffset - position.Y >= screen.Y)
+            position.Y = screen.Y;
+        else
+            position.Y += yoffset;
+    }
+
     BarConsoleSetCursorPosition(position);
 
     return position;
@@ -298,9 +410,50 @@ void BarConsoleEraseLine(int mode)
     }
 
     FillConsoleOutputCharacter(handle, ' ', length, coords, &writen);
-    FillConsoleOutputAttribute(handle, csbiInfo.wAttributes, csbiInfo.dwSize.X, coords, &writen);
+    FillConsoleOutputAttribute(handle, csbiInfo.wAttributes, length, coords, &writen);
 
     SetConsoleCursorPosition(handle, coords);
+}
+
+void BarConsoleEraseDisplay(int mode)
+{
+    CONSOLE_SCREEN_BUFFER_INFO csbiInfo;
+    DWORD writen, length;
+    COORD coords;
+
+    HANDLE handle = BarConsoleGetStdOut();
+
+    if (!GetConsoleScreenBufferInfo(handle, &csbiInfo))
+        return;
+
+    writen = 0;
+    coords.X = csbiInfo.dwCursorPosition.X;
+    coords.Y = csbiInfo.dwCursorPosition.Y;
+
+    switch (mode)
+    {
+        default:
+        case 0: /* from cursor */
+            length = csbiInfo.dwSize.X * csbiInfo.dwSize.Y;
+            break;
+
+        case 1: /* to cursor */
+            length = coords.Y * csbiInfo.dwSize.X + coords.X;
+            coords.X = 0;
+            coords.Y = 0;
+            break;
+
+        case 2: /* whole screen */
+        case 3: /* whole screen and history*/
+            coords.X = 0;
+            coords.Y = 0;
+            length = csbiInfo.dwSize.X * csbiInfo.dwSize.Y;
+            SetConsoleCursorPosition(handle, coords);
+            break;
+    }
+
+    FillConsoleOutputCharacter(handle, ' ', length, coords, &writen);
+    FillConsoleOutputAttribute(handle, csbiInfo.wAttributes, length, coords, &writen);
 }
 
 void BarConsoleSetClipboard(const char* text)

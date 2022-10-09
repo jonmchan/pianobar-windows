@@ -34,11 +34,13 @@ HANDLE BarConsoleGetStdIn ();
 HANDLE BarConsoleGetStdOut ();
 void BarConsoleSetTitle (const char* title);
 void BarConsoleSetSize (int width, int height);
+COORD BarConsoleGetSize ();
 void BarConsoleSetCursorPosition (COORD position);
 COORD BarConsoleGetCursorPosition ();
-COORD BarConsoleMoveCursor (int xoffset);
+COORD BarConsoleMoveCursor (int xoffset, int yoffset);
 void BarConsoleEraseCharacter ();
 void BarConsoleEraseLine (int mode); // 0 - from cursor, 1 - to cursor, 2 - entire line
+void BarConsoleEraseDisplay (int mode); // 0 - from cursor, 1 - to cursor, 2 - entire display
 
 void BarConsoleSetClipboard (const char*);
 

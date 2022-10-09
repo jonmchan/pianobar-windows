@@ -7,7 +7,7 @@ pianobar is a console client for the personalized web radio [Pandora](http://www
 [![Build status](https://ci.appveyor.com/api/projects/status/6n5qa9bs7aiy8e52?svg=true)](https://ci.appveyor.com/project/thedmd/pianobar-windows)
 
 Releases:
- * [2022.04.16](https://github.com/thedmd/pianobar-windows/releases/tag/2022.04.16) (builds: [x64](https://github.com/thedmd/pianobar-windows/releases/download/2022.04.16/pianobar-2022.04.16-x64.zip), [x86](https://github.com/thedmd/pianobar-windows/releases/download/2022.04.16/pianobar-2022.04.16-x86.zip))
+ * [2022.04.16](https://github.com/thedmd/pianobar-windows/releases/tag/2022.10.09) (builds: [x64](https://github.com/thedmd/pianobar-windows/releases/download/2022.10.09/pianobar-2022.10.09-x64.zip), [x86](https://github.com/thedmd/pianobar-windows/releases/download/2022.10.09/pianobar-2022.10.09-x86.zip))
 
 Older releases can be found at [GitHub Release page](https://github.com/thedmd/pianobar-windows/releases).
 

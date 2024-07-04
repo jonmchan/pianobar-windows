@@ -28,7 +28,7 @@ THE SOFTWARE.
 #include <piano.h>
 
 #include "main.h"
-#include "debug.h"
+//#include "debug.h"
 #include "console.h"
 #include "hotkey.h"
 #include "ui.h"
@@ -424,7 +424,7 @@ int main(int argc, char **argv)
 {
     static BarApp_t app;
 
-	debugEnable();
+	//debugEnable();
 
     memset(&app, 0, sizeof(app));
 

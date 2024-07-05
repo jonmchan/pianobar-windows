@@ -778,6 +778,11 @@ void BarUiStartEventCmd (const BarSettings_t *settings, const char *type,
 		return;
 	}
 
+	if (settings->subscribedEvents == NULL) {
+		/* no subscribed events... */
+		return;
+	}
+
 	char* subscribedEvents = strdup(settings->subscribedEvents);
 	int subscribed = 0;
 

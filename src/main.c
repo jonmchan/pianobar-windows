@@ -305,8 +305,11 @@ static void BarMainStartPlayback(BarApp_t *app)
  */
 static void BarMainPlayerCleanup(BarApp_t *app)
 {
-    BarUiStartEventCmd(&app->settings, "songfinish", app->curStation,
-        app->playlist, &app->player, app->ph.stations, PIANO_RET_OK);
+    // without this, pianobar starts main loop firing an empty songfinish; let's avoid that
+    if (app->playlist != NULL) {
+        BarUiStartEventCmd(&app->settings, "songfinish", app->curStation,
+            app->playlist, &app->player, app->ph.stations, PIANO_RET_OK);
+    }
 
     BarPlayer2Finish(app->player);
 

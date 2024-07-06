@@ -810,22 +810,32 @@ void BarUiStartEventCmd (const BarSettings_t *settings, const char *type,
 	char* replacement1 = NULL;
 	char* replacement2 = NULL;
 	char* replacement3 = NULL;
+	char* replacement4 = NULL;
 	char* cmd = NULL;
 
 	replacement1 = replaceWord(settings->eventCmd, "$song", curSong == NULL ? "" : curSong->title);
 	replacement2 = replaceWord(replacement1, "$artist", curSong == NULL ? "" : curSong->artist);
 	replacement3 = replaceWord(replacement2, "$album", curSong == NULL ? "" : curSong->album);
-	cmd = replaceWord(replacement3, "$station", curStation == NULL ? "" : curStation->name);
+	replacement4 = replaceWord(replacement3, "$coverArt", curSong == NULL ? "" : curSong->coverArt);
+	cmd = replaceWord(replacement4, "$station", curStation == NULL ? "" : curStation->name);
 	free(replacement1);
 	free(replacement2);
 	free(replacement3);
+	free(replacement4);
 
 	BarUiMsg(settings, MSG_DEBUG, "Raw command to run: %s\n", cmd);
 
 	wchar_t wcmd[10000];
 	mbstowcs(wcmd, cmd, 10000);
 
-
+	BarUiMsg(settings, MSG_DEBUG, 
+		"Variables:\nartist=%s\nalbum=%s\ntitle=%s\ncoverArt=%s\nstationName=%s\n",
+		curSong == NULL ? "" : curSong->artist,
+		curSong == NULL ? "" : curSong->album,
+		curSong == NULL ? "" : curSong->title, 
+		curSong == NULL ? "" : curSong->coverArt,
+		curStation == NULL ? "" : curStation->name
+	);
 
 	STARTUPINFO si;
 	PROCESS_INFORMATION pi;

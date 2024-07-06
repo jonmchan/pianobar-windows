@@ -104,4 +104,4 @@ subscribed_events = songstart,songfinish
 
 # you can pass variable substitution to event_command to get the current songs.
 # Variables supported: $artist, $album, $song, and $station
-event_command = C:\Users\Jonathan\bin\wsl-notify-send.exe --appId "Pianobar" --category "$station" "$artist `n$album `n$song"
+event_command = C:\Users\Jonathan\bin\wsl-notify-send.exe --appId "Pianobar" --category "$station" "$artist `n$album `n$song" -i "$coverArt"
